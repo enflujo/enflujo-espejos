@@ -1,0 +1,90 @@
+html {
+  box-sizing: border-box;
+  height: 100%;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+::selection {
+  background-color: #30cac073;
+  color: #130808;
+}
+
+canvas {
+  &.completa {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    display: inline-block;
+    vertical-align: top;
+    top: 0;
+    left: 0;
+    z-index: 0;
+  }
+}
+
+#menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 9;
+  list-style: none;
+  margin: 0;
+
+  li {
+    text-align: right;
+    margin-bottom: 0.3em;
+
+    a,
+    a:link {
+      display: inline-block;
+      text-decoration: none;
+      color: #e6f5ff;
+      background-color: #8ac2e7;
+      padding: 0.3em;
+
+      &:hover,
+      &.actual {
+        background-color: rgb(49, 86, 107);
+      }
+    }
+  }
+}
+
+.actual {
+  cursor: initial;
+  pointer-events: none;
+}
+
+#opciones {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9;
+  list-style: none;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+
+  li {
+    background-color: teal;
+    padding: 0.35em;
+    display: inline-block;
+    color: white;
+
+    &:hover,
+    &.actual {
+      background-color: #0bd6d6;
+    }
+  }
+}
