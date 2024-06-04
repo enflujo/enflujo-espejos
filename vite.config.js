@@ -15,6 +15,7 @@ export default defineConfig({
       input: {
         principal: resolve(__dirname, 'index.html'),
         liquido: resolve(__dirname, 'liquido.html'),
+        rendijas: resolve(__dirname, 'rendijasEnElTiempo.html'),
       },
     },
   },
