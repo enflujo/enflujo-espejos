@@ -427,6 +427,11 @@ domutils@^3.0.1:
     domelementtype "^2.3.0"
     domhandler "^5.0.3"
 
+drag-tracker@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/drag-tracker/-/drag-tracker-1.0.0.tgz#9bd33d380bc3056db69bd5b3cf6e062fec58bd64"
+  integrity sha512-BSGDl37YXpW49dLMRfiDExxzD3yPOpLEBGx05Wed3z2sk2+Qd5dFvHCSVFTPsGTeltGBtkRB4qhLhSKv6tvBKw==
+
 electron-to-chromium@^1.4.668:
   version "1.4.788"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.788.tgz#a3545959d5cfa0a266d3e551386c040be34e7e06"
