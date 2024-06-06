@@ -9,7 +9,7 @@
     <link rel="manifest" href="/sitio.webmanifest" />
     <!-- <link rel="canonical" href="https://enflujo.com" /> -->
 
-    <title>..:: EsPeJo | EnFlujo ::..</title>
+    <title>..:: EnFlujo ::..</title>
     <!-- <meta name="description" content="Descripción del sitio...." /> -->
 
     <!-- OpenGraph -->
@@ -36,16 +36,30 @@
   </head>
   <body>
     <ul id="menu">
-      <li><a href="/">marioneta</a></li>
-      <li><a href="/liquido">liquido</a></li>
-      <li><a href="/rendijasEnElTiempo" class="actual">rendijas en el tiempo</a></li>
-      <li><a href="/detectorObjetos">detector de objetos</a></li>
+      <li><a href="/" class="actual">marioneta</a></li>
+      <li><a href="/liquido">líquido</a></li>
+      <li><a href="/rendijasEnElTiempo">rendijas en el tiempo</a></li>
+      <li><a href="//detectorObjetos">detector de objetos</a></li>
     </ul>
-    <ul id="opciones">
-      <li id="vertical" class="actual">vertical</li>
-      <li id="horizontal">horizontal</li>
-    </ul>
-    <canvas id="lienzo" class="completa"></canvas>
-    <script type="module" src="/src/rendijas/rendijas.ts"></script>
+
+    <link
+      href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+
+    <section id="demos" class="invisible">
+      <p><b>Click en la imagen</b> para detectar objetos.</p>
+
+      <div class="detectOnClick">
+        <img
+          src="./estaticos/petro1.jpg"
+          width="100%"
+          crossorigin="anonymous"
+          title="Click para obtener clasificación"
+        />
+      </div>
+    </section>
+    <script type="module" src="/src/objetos/objetos.ts"></script>
   </body>
 </html>
