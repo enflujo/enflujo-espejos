@@ -40,16 +40,27 @@
       <li><a href="/" class="actual">esqueleto</a></li>
       <li><a href="/liquido">líquido</a></li>
       <li><a href="/rendijasEnElTiempo">rendijas en el tiempo</a></li>
-      <li><a href="/detectorObjetos">detector de objetos</a></li>
+      <li><a href="//detectorObjetos">detector de objetos</a></li>
     </ul>
 
     <div id="contenedorMarioneta">
+      <h2>Mover los puntos para deformar la imagen</h2>
+
       <img id="i" />
       <div id="drag-wrapper">
         <canvas id="c"></canvas>
+
+        <div class="drag-handle" data-corner="0"></div>
+        <div class="drag-handle" data-corner="1"></div>
+        <div class="drag-handle" data-corner="2"></div>
+        <div class="drag-handle" data-corner="3"></div>
+        <div class="drag-handle" data-corner="4"></div>
+        <div class="drag-handle" data-corner="5"></div>
+        <div class="drag-handle" data-corner="6"></div>
+        <div class="drag-handle" data-corner="7"></div>
+        <div class="drag-handle" data-corner="8"></div>
       </div>
     </div>
-    <video id="camara"></video>
 
     <script type="module" src="/src/marioneta/marioneta.ts"></script>
   </body>

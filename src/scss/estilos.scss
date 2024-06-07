@@ -150,7 +150,7 @@ section {
 }
 
 // Estilos marioneta
-#contenedorMarioneta {
+/* #contenedorMarioneta {
   display: flex;
   flex-flow: column nowrap;
   margin: 0;
@@ -161,18 +161,17 @@ section {
   background-color: #ccc;
   font-family: Georgia, sans-serif;
   text-align: center;
-}
+} */
 
 #i {
   display: none;
 }
 #c {
   display: block;
-  background-color: #eee;
-  box-shadow: 2px 2px 6px 0 rgba(black, 0.5);
+  background-color: #f8dddd;
 }
 
-#drag-wrapper {
+/* #drag-wrapper {
   position: relative;
 
   .drag-handle {
@@ -205,4 +204,4 @@ section {
       //content: attr(data-corner);
     }
   }
-}
+} */
