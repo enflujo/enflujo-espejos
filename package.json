@@ -11,6 +11,7 @@
     "lint:fix": "prettier --write --list-different ."
   },
   "devDependencies": {
+    "@types/d3-delaunay": "^6.0.4",
     "autoprefixer": "^10.4.19",
     "cssnano": "^7.0.1",
     "postcss": "^8.4.38",
@@ -20,6 +21,7 @@
   },
   "dependencies": {
     "@mediapipe/tasks-vision": "^0.10.14",
+    "d3": "^7.9.0",
     "d3-delaunay": "^6.0.4",
     "drag-tracker": "^1.0.0"
   }

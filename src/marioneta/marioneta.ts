@@ -1,7 +1,7 @@
 import '../scss/estilos.scss';
 import { FilesetResolver, PoseLandmarker } from '@mediapipe/tasks-vision';
 import { DrawingUtils } from '@mediapipe/tasks-vision';
-import delaunay from 'd3-delaunay';
+import { Delaunay } from 'd3-delaunay';
 import { iniciarCamara } from '../ayudas';
 import { dimsCamara } from '../constantes';
 
@@ -17,6 +17,7 @@ const marcadores = await PoseLandmarker.createFromOptions(vision, {
 });
 const marcasDelCuerpo = PoseLandmarker.POSE_CONNECTIONS;
 
+// Imagen
 const lienzoImg = document.querySelector('#c') as HTMLCanvasElement;
 
 const ctxImg = lienzoImg?.getContext('2d');
@@ -24,15 +25,22 @@ const img = document.getElementById('i') as HTMLImageElement;
 let anchoImg: number;
 let altoImg: number;
 
+const marcadoresImg = await PoseLandmarker.createFromOptions(vision, {
+  baseOptions: { modelAssetPath: '/modelos/pose_landmarker_lite.task', delegate: 'GPU' },
+  runningMode: 'IMAGE',
+  numPoses: 1,
+  outputSegmentationMasks: true,
+});
+const marcasCuerpoImg = PoseLandmarker.POSE_CONNECTIONS;
+
 async function cargarImagen() {
-  img.src = './vickyCuerpo.jpg';
+  img.src = './trumpcuerpo.jpg';
   img.onload = function () {
     anchoImg = lienzoImg.width = img.width;
     altoImg = lienzoImg.height = img.height;
-    ctxImg?.drawImage(img, 0, 0, img.width, img.height);
+    // ctxImg?.drawImage(img, 0, 0, img.width, img.height);
   };
-
-  document.body.appendChild(lienzoImg);
+  //document.body.appendChild(lienzoImg);
 }
 
 async function inicio() {
@@ -49,15 +57,16 @@ async function inicio() {
 
   escalar(camara);
   const pintor = new DrawingUtils(ctx);
-  reloj = requestAnimationFrame(espejitoEspejito);
   const color = ctx.createLinearGradient(0, 0, ancho2, 0);
   color.addColorStop(0, 'darkblue');
   color.addColorStop(0.5, 'lightblue');
   color.addColorStop(1, 'darkblue');
+  reloj = requestAnimationFrame(espejitoEspejito);
   // ctx.fillStyle = color;
+
   function espejitoEspejito(ahora: number) {
-    ctx.fillRect(0, 0, lienzo.width, lienzo.height);
-    const poses = marcadores.detectForVideo(camara, ahora);
+    // ctx.fillRect(0, 0, lienzo.width, lienzo.height);
+    /* const poses = marcadores.detectForVideo(camara, ahora);
 
     if (poses.landmarks.length) {
       poses.landmarks.forEach((puntos) => {
@@ -68,12 +77,56 @@ async function inicio() {
         });
       });
     }
+ */
 
-    reloj = requestAnimationFrame(espejitoEspejito);
+    //ctx.fillRect(0, 0, anchoImg, altoImg);
+
+    // detectarCuerpoImg();
+    if (img.src) {
+      const posesImg = marcadoresImg.detect(img);
+
+      if (posesImg.landmarks.length) {
+        posesImg.landmarks.forEach((puntos) => {
+          const puntosImg = puntos.map((punto) => [punto.x * anchoImg, punto.y * altoImg]);
+          calcularVoronoi(puntosImg);
+        });
+      }
+
+      //listaDelaunay.renderPoints(ctx, 5);
+      reloj = requestAnimationFrame(espejitoEspejito);
+    }
   }
 }
 
 inicio().catch(console.error);
+
+const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+svg.setAttribute('width', '1000');
+svg.setAttribute('height', '1000');
+svg.setAttribute('fill', 'transparent');
+svg.setAttribute('stroke', 'black');
+svg.appendChild(p);
+document.body.appendChild(svg);
+
+function calcularVoronoi(puntosImg: any) {
+  const resultado = Delaunay.from(puntosImg);
+
+  //console.log(resultado);
+
+  ctx.fillStyle = 'white';
+  ctx.strokeStyle = 'black';
+  ctx.fillRect(0, 0, lienzo.width, lienzo.height);
+  ctx.fillStyle = 'white';
+  ctx.strokeStyle = 'white';
+
+  const bah = resultado.render();
+  let trazo = new Path2D(bah);
+  p.setAttribute('d', bah);
+
+  ctx.drawImage(img, 0, 0, img.width, img.height);
+  ctx.stroke(trazo);
+}
 
 function escalar(camara: HTMLVideoElement) {
   lienzo.width = camara.videoWidth;

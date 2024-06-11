@@ -174,11 +174,14 @@ function marioneta() {
     const nariz = [w / 1.9, h / 2.5];
     const ojoIzq = [];
 
-    drawTriangle([0, 0], nariz, [0, h], corners[0], corners[4], corners[6]);
-    drawTriangle([0, 0], nariz, [w, 0], corners[0], corners[4], corners[2]);
-    drawTriangle([w, 0], nariz, [w, h], corners[2], corners[4], corners[8]);
-    drawTriangle([0, h], nariz, [w, h], corners[6], corners[4], corners[8]);
+    drawTriangle([0, 0], [w / 2, h / 2], [0, h], corners[0], corners[2], corners[3]);
+    //*
+    drawTriangle([0, 0], [w / 2, h / 2], [w, 0], corners[0], corners[2], corners[1]);
 
+    drawTriangle([w, 0], [w / 2, h / 2], [w, h], corners[1], corners[2], corners[4]);
+
+    drawTriangle([0, h], [w / 2, h / 2], [w, h], corners[3], corners[2], corners[4]);
+    //*/
     corners.forEach((c, i) => {
       const s = handles[i].style;
       s.left = c[0] + 'px';
@@ -200,15 +203,15 @@ function marioneta() {
                    [rnd(w*.33) + w*.67, rnd(h*.33) + h*.67]];*/
 
     // Esquinas sin deformar
-    /*    corners = [
+    corners = [
       [0, 0],
       [w, 0],
       [w / 2, h / 2],
       [0, h],
       [w, h],
-    ]; */
+    ];
 
-    corners = [
+    /*     corners = [
       [0, 0], //superior izquierda -> corners[0]
       [w * 0.5, 0], //superior centro
       [w, 0], //superior derecha
@@ -218,9 +221,7 @@ function marioneta() {
       [0, h], // inferior izquierda 3
       [w * 0.5, h], // inferior centro
       [w, h], // inferior derecha
-    ];
-
-    /*     esquinas = [] */
+    ]; */
 
     /*
     matrizPuntos = {
