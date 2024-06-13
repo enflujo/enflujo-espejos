@@ -14,7 +14,10 @@ const marcadores = await FaceLandmarker.createFromOptions(vision, {
   numFaces: 1,
   // outputSegmentationMasks: true
 });
-const contornoCara = FaceLandmarker.FACE_LANDMARKS_FACE_OVAL;
+const contornoCara = FaceLandmarker.FACE_LANDMARKS_LIPS;
+const contornoOjoIzq = FaceLandmarker.FACE_LANDMARKS_LEFT_EYE;
+const contornoOjoDer = FaceLandmarker.FACE_LANDMARKS_RIGHT_EYE;
+const contornoTeselado = FaceLandmarker.FACE_LANDMARKS_TESSELATION;
 const lienzo2 = new OffscreenCanvas(0, 0);
 const ctx2 = lienzo2.getContext('2d') as OffscreenCanvasRenderingContext2D;
 console.log(contornoCara);
@@ -51,6 +54,7 @@ async function inicio() {
         // });
 
         ctx2.beginPath();
+
         contornoCara.forEach(({ start }, i) => {
           const punto = puntos[start];
           const x = punto.x * lienzo.width;
@@ -61,6 +65,39 @@ async function inicio() {
             ctx2.lineTo(x, y);
           }
         });
+
+        contornoOjoIzq.forEach(({ start }, i) => {
+          const punto = puntos[start];
+          const x = punto.x * lienzo.width;
+          const y = punto.y * lienzo.height;
+          if (i === 0) {
+            ctx2.moveTo(x, y);
+          } else {
+            ctx2.lineTo(x, y);
+          }
+        });
+
+        contornoOjoDer.forEach(({ start }, i) => {
+          const punto = puntos[start];
+          const x = punto.x * lienzo.width;
+          const y = punto.y * lienzo.height;
+          if (i === 0) {
+            ctx2.moveTo(x, y);
+          } else {
+            ctx2.lineTo(x, y);
+          }
+        });
+
+        /*        contornoTeselado.forEach(({ start }, i) => {
+          const punto = puntos[start];
+          const x = punto.x * lienzo.width;
+          const y = punto.y * lienzo.height;
+          if (i === 0) {
+            ctx2.moveTo(x, y);
+          } else {
+            ctx2.lineTo(x, y);
+          }
+        }); */
 
         ctx2.fill();
       });
