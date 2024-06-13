@@ -17,6 +17,7 @@ export default defineConfig({
         liquido: resolve(__dirname, 'liquido.html'),
         rendijas: resolve(__dirname, 'rendijasEnElTiempo.html'),
         objetos: resolve(__dirname, 'detectorObjetos.html'),
+        carealgo: resolve(__dirname, 'carealgo.html'),
       },
     },
   },

@@ -2,6 +2,28 @@
 //http://s3.amazonaws.com/canvas-warp/2009-11-01/index.html
 
 import dragTracker from 'drag-tracker';
+import { FilesetResolver, PoseLandmarker } from '@mediapipe/tasks-vision';
+import { DrawingUtils } from '@mediapipe/tasks-vision';
+import { iniciarCamara } from '../ayudas';
+import { dimsCamara } from '../constantes';
+
+let reloj = 0;
+const lienzo = document.createElement('canvas');
+const ctx = lienzo.getContext('2d') as CanvasRenderingContext2D;
+const vision = await FilesetResolver.forVisionTasks();
+const marcadores = await PoseLandmarker.createFromOptions(vision, {
+  baseOptions: { modelAssetPath: '/modelos/pose_landmarker_lite.task', delegate: 'GPU' },
+  runningMode: 'VIDEO',
+  numPoses: 1,
+  // outputSegmentationMasks: true
+});
+const marcasDelCuerpo = PoseLandmarker.POSE_CONNECTIONS;
+
+function escalar(camara: HTMLVideoElement) {
+  lienzo.width = camara.videoWidth;
+  lienzo.height = camara.videoHeight;
+  ctx.fillStyle = '#e6f5ff';
+}
 
 function marioneta() {
   const utils = {
@@ -173,14 +195,15 @@ function marioneta() {
     ctx?.clearRect(0, 0, w, h);
     const nariz = [w / 1.9, h / 2.5];
     const ojoIzq = [];
+    const x0 = w * 0.45;
+    const y0 = h * 0.1;
+    const x2 = w * 0.55;
+    const y2 = h * 0.1;
 
-    drawTriangle([0, 0], [w / 2, h / 2], [0, h], corners[0], corners[2], corners[3]);
-    //*
-    drawTriangle([0, 0], [w / 2, h / 2], [w, 0], corners[0], corners[2], corners[1]);
-
-    drawTriangle([w, 0], [w / 2, h / 2], [w, h], corners[1], corners[2], corners[4]);
-
-    drawTriangle([0, h], [w / 2, h / 2], [w, h], corners[3], corners[2], corners[4]);
+    drawTriangle([x0, y0], [x2, y2], [0, h], corners[0], corners[2], corners[3]);
+    drawTriangle([x0, y0], [x2, y2], [w, 0], corners[0], corners[2], corners[1]);
+    drawTriangle([w, 0], [x2, y2], [w, h], corners[1], corners[2], corners[4]);
+    drawTriangle([0, h], [x2, y2], [w, h], corners[3], corners[2], corners[4]);
     //*/
     corners.forEach((c, i) => {
       const s = handles[i].style;
@@ -194,7 +217,10 @@ function marioneta() {
 
     w = canv.width = img.width;
     h = canv.height = img.height;
-
+    const x2 = w * 0.55;
+    const y2 = h * 0.1;
+    const x0 = w * 0.45;
+    const y0 = h * 0.1;
     //Put the four corners (and center) of the source image at semi-random places on the canvas:
     /* corners = [[rnd(w*.33),         rnd(h*.33)],
                    [rnd(w*.33) + w*.67, rnd(h*.33)],
@@ -204,9 +230,9 @@ function marioneta() {
 
     // Esquinas sin deformar
     corners = [
-      [0, 0],
+      [x0, y0],
       [w, 0],
-      [w / 2, h / 2],
+      [x2, y2],
       [0, h],
       [w, h],
     ];
@@ -255,20 +281,76 @@ function marioneta() {
 
     updateUI();
 
-    dragTracker({
-      container: document.querySelector('#drag-wrapper'),
-      selector: '.drag-handle',
-      handleOffset: 'center',
-      callback: (box, pos) => {
-        //console.log(corners[box.dataset.corner], pos);
-        corners[box.dataset.corner] = pos;
-        updateUI();
-      },
-    });
+    // dragTracker({
+    //   container: document.querySelector('#drag-wrapper'),
+    //   selector: '.drag-handle',
+    //   handleOffset: 'center',
+    //   callback: (box, pos) => {
+    //     console.log(box.dataset.corner, pos);
+    //     //console.log(corners[box.dataset.corner], pos);
+    //     corners[box.dataset.corner] = pos;
+    //     updateUI();
+    //   },
+    // });
+
+    // let x = w / 2;
+    // let y = h / 2;
+    // const velocidad = 0.1;
+    // function pruebaAnimacion() {
+    //   x += velocidad;
+    //   y = Math.random() * 100;
+    //   corners[2] = [x, y];
+    //   updateUI();
+    //   requestAnimationFrame(pruebaAnimacion);
+    // }
+    // pruebaAnimacion();
+
+    async function inicio() {
+      const { ancho, alto } = dimsCamara();
+      const escala = ancho / 2 / alto;
+      const ancho2 = window.innerWidth / 2;
+      const alto2 = ancho2 * escala;
+      const camara = (await iniciarCamara(ancho2 - 10, alto2)) as HTMLVideoElement;
+      if (!camara) return;
+
+      // document.body.appendChild(lienzo);
+      escalar(camara);
+      // const pintor = new DrawingUtils(ctx);
+      reloj = requestAnimationFrame(espejitoEspejito);
+      // const color = ctx.createLinearGradient(0, 0, ancho2, 0);
+      // color.addColorStop(0, 'darkblue');
+      // color.addColorStop(0.5, 'lightblue');
+      // color.addColorStop(1, 'darkblue');
+      // ctx.fillStyle = color;
+      function espejitoEspejito(ahora: number) {
+        // ctx.fillRect(0, 0, lienzo.width, lienzo.height);
+        const poses = marcadores.detectForVideo(camara, ahora);
+
+        if (poses.landmarks.length) {
+          const puntaNariz = poses.landmarks[0][0];
+          const ojoDerExtremo = poses.landmarks[0][6];
+          corners[2] = [puntaNariz.x * w, puntaNariz.y * h];
+          corners[0] = [ojoDerExtremo.x * w, ojoDerExtremo.y * h];
+          updateUI();
+
+          // poses.landmarks.forEach((puntos) => {
+          // console.log(puntos);
+          // pintor.drawConnectors(puntos, marcasDelCuerpo, {
+          //   lineWidth: 1,
+          //   color: color,
+          // });
+          // });
+        }
+
+        reloj = requestAnimationFrame(espejitoEspejito);
+      }
+    }
+
+    inicio().catch(console.error);
   };
 
   const imgW = Math.min(window.innerWidth - 10, 700);
-  img.src = './petro2.jpeg';
+  img.src = './trumpcuerpo.jpg';
   //img.src = `https://picsum.photos/${imgW}/${Math.round(imgW*2/3)}?image=1072`;
   //img.src ='https://caracoltv.brightspotcdn.com/dims4/default/30d478e/2147483647/strip/true/crop/1000x716+0+0/resize/1000x716!/quality/90/?url=http:%2F%2Fcaracol-brightspot.s3.amazonaws.com%2F06%2F0f%2F3136f98941ce886e7ffd09a62f0b%2Fgustavo-petro.jpeg';
 }
