@@ -43,9 +43,16 @@
       <li><a href="/detectorObjetos">detector de objetos</a></li>
     </ul>
 
-    <video id="camara"></video>
-    <video id="video" src="/vid.mp4" muted controls loop autoplay></video>
+    <!-- <video id="camara"></video> -->
+    <video id="video" src="/petroduque.mp4" muted controls loop autoplay></video>
 
+    <p id="status">Loading...</p>
+    <div id="container">
+      <canvas id="lienzo"></canvas>
+      <gum-av></gum-av>
+      <canvas id="canvas"></canvas>
+    </div>
+    <script type="module" src="/src/ayudas/gum-av.ts"></script>
     <script type="module" src="/src/carealgo/carealgo.ts"></script>
   </body>
 </html>

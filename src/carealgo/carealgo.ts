@@ -1,229 +1,178 @@
-import '../scss/estilos.scss';
-import { FilesetResolver, FaceLandmarker } from '@mediapipe/tasks-vision';
-import { DrawingUtils } from '@mediapipe/tasks-vision';
-import { iniciarCamara } from '../ayudas';
-import { dimsCamara } from '../constantes';
+import { OrbitControls } from 'three/examples/jsm/Addons.js';
+import { FaceMeshFaceGeometry } from '../ayudas/face';
+import {
+  WebGLRenderer,
+  DoubleSide,
+  Mesh,
+  MeshBasicMaterial,
+  OrthographicCamera,
+  PerspectiveCamera,
+  Scene,
+  VideoTexture,
+  SRGBColorSpace,
+} from 'three';
+import * as tf from '@tensorflow/tfjs';
+import * as facemesh from '@tensorflow-models/facemesh';
+import GumAudioVideo from '../ayudas/gum-av';
 
-let reloj = 0;
-const lienzo = document.createElement('canvas');
-const ctx = lienzo.getContext('2d') as CanvasRenderingContext2D;
-const videoTrump = document.getElementById('video') as HTMLVideoElement;
-const vision = await FilesetResolver.forVisionTasks();
-const marcadores = await FaceLandmarker.createFromOptions(vision, {
-  baseOptions: { modelAssetPath: '/modelos/face_landmarker.task', delegate: 'GPU' },
-  runningMode: 'VIDEO',
-  numFaces: 1,
-  // outputSegmentationMasks: true
-});
-const contornoBoca = FaceLandmarker.FACE_LANDMARKS_LIPS;
-const contornoOjoIzq = FaceLandmarker.FACE_LANDMARKS_LEFT_EYE;
-const contornoOjoDer = FaceLandmarker.FACE_LANDMARKS_RIGHT_EYE;
-const contornoTeselado = FaceLandmarker.FACE_LANDMARKS_TESSELATION;
-const contornoCara = [...contornoBoca, ...contornoOjoDer, ...contornoOjoIzq];
-const lienzo2 = new OffscreenCanvas(0, 0);
-const ctx2 = lienzo2.getContext('2d') as OffscreenCanvasRenderingContext2D;
-let reproduciendo = false;
+const av = document.querySelector('gum-av') as GumAudioVideo;
+const canvas = document.querySelector('canvas') as HTMLCanvasElement;
+const status = document.querySelector('#status');
+const video = document.getElementById('video') as HTMLVideoElement;
 
-videoTrump.onplaying = (evento) => {
-  reproduciendo = true;
-};
+// Set a background color, or change alpha to false for a solid canvas.
+const renderer = new WebGLRenderer({ antialias: true, alpha: true, canvas });
+// renderer.setClearColor(0x202020);
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.outputColorSpace = SRGBColorSpace;
 
-videoTrump.onpause = (evento) => {
-  reproduciendo = false;
-};
+const scene = new Scene();
+const camera = new OrthographicCamera(1, 1, 1, 1, -1000, 1000);
 
-//console.log(contornoCara);
-async function inicio() {
-  const { ancho, alto } = dimsCamara();
-  const escala = ancho / 2 / alto;
-  const ancho2 = window.innerWidth / 2;
-  const alto2 = ancho2 * escala;
-  const camara = (await iniciarCamara(ancho2 - 10, alto2)) as HTMLVideoElement;
-  if (!camara) return;
+// Change to renderer.render(scene, debugCamera); for interactive view.
+const debugCamera = new PerspectiveCamera(75, 1, 0.1, 1000);
+debugCamera.position.set(300, 300, 300);
+debugCamera.lookAt(scene.position);
+const controls = new OrbitControls(debugCamera, renderer.domElement);
 
-  document.body.appendChild(lienzo);
-  escalar(camara);
-  const pintor = new DrawingUtils(ctx);
-  reloj = requestAnimationFrame(espejitoEspejito);
-  const color = ctx.createLinearGradient(0, 0, ancho2, 0);
-  color.addColorStop(0, 'darkblue');
-  color.addColorStop(0.5, 'lightblue');
-  color.addColorStop(1, 'darkblue');
-  // ctx.fillStyle = color;
-  const ojoManual = [33, 7, 163, 144, 145, 153, 154, 155, 133, 173, 157, 158, 159, 160, 161, 246];
-  function espejitoEspejito(ahora: number) {
-    ctx2.clearRect(0, 0, lienzo.width, lienzo.height);
+let width = 0;
+let height = 0;
 
-    ctx.drawImage(camara, 0, 0);
-
-    const poses = marcadores.detectForVideo(camara, ahora);
-
-    if (reproduciendo) {
-      const posesTrump = marcadores.detectForVideo(videoTrump, ahora + 1 / 1000);
-      ctx.fillStyle = 'black';
-      //ctx.clearRect(0, 0, lienzo.width, lienzo.height);
-      posesTrump.faceLandmarks.forEach((puntos) => {
-        ctx2.beginPath();
-        console.log(contornoOjoDer);
-        ojoManual.forEach((indice, i) => {
-          const punto = puntos[indice];
-
-          const x = punto.x * lienzo.width;
-          const y = punto.y * lienzo.height;
-
-          if (i === 0) {
-            ctx2.moveTo(x, y);
-            // ctx2.lineTo(x2, y2);
-          } else {
-            ctx2.lineTo(x, y);
-            // ctx2.lineTo(x2, y2);
-          }
-
-          // if (i === 0 || i === contornoOjoDer.length - 1 || i === contornoOjoDer.length - 2)
-          //   ctx2.fillText(`${start}`, x, y);
-        });
-
-        contornoBoca.forEach(({ start }, i) => {
-          const punto = puntos[start];
-          const x = punto.x * lienzo.width;
-          const y = punto.y * lienzo.height;
-          if (i === 0) {
-            ctx2.moveTo(x, y);
-          } else {
-            ctx2.lineTo(x, y);
-          }
-        });
-
-        contornoOjoIzq.forEach(({ start, end }, i) => {
-          const punto = puntos[start];
-          const puntoFinal = puntos[end];
-          const x = punto.x * lienzo.width;
-          const y = punto.y * lienzo.height;
-          //console.log(puntos);
-          if (i === 0) {
-            ctx2.moveTo(x, y);
-          } else {
-            ctx2.lineTo(x, y);
-          }
-        });
-
-        ctx2.closePath();
-        // console.log('---');
-        ctx2.fill();
-
-        // pintor.drawConnectors(puntos, contornoTeselado, {
-        //   lineWidth: 1,
-        //   color: color,
-        //   fillColor: 'black',
-        // });
-      });
-
-      ctx.save();
-      // ctx.globalCompositeOperation = 'destination-in';
-      ctx.globalCompositeOperation = 'source-atop';
-      ctx.drawImage(lienzo2, 0, 0);
-      ctx.restore();
-    }
-
-    const verCamara = true;
-
-    if (verCamara) {
-      if (poses.faceLandmarks.length) {
-        poses.faceLandmarks.forEach((puntos) => {
-          ctx2.beginPath();
-
-          contornoBoca.forEach(({ start }, i) => {
-            const punto = puntos[start];
-            const x = punto.x * lienzo.width;
-            const y = punto.y * lienzo.height;
-            if (i === 0) {
-              ctx2.moveTo(x, y);
-            } else {
-              ctx2.lineTo(x, y);
-            }
-          });
-
-          contornoOjoIzq.forEach(({ start, end }, i) => {
-            const punto = puntos[start];
-            const puntoFinal = puntos[end];
-            const x = punto.x * lienzo.width;
-            const y = punto.y * lienzo.height;
-            //console.log(puntos);
-            if (i === 0) {
-              ctx2.moveTo(x, y);
-            } else {
-              ctx2.lineTo(x, y);
-            }
-          });
-
-          contornoOjoDer.forEach(({ start }, i) => {
-            const punto = puntos[start];
-            const x = punto.x * lienzo.width;
-            const y = punto.y * lienzo.height;
-            if (i === 0) {
-              ctx2.moveTo(x, y);
-            } else {
-              ctx2.lineTo(x, y);
-            }
-          });
-
-          ctx2.fill();
-        });
-        ctx.save();
-        ctx.globalCompositeOperation = 'destination-in';
-        ctx.drawImage(lienzo2, 0, 0);
-        ctx.restore();
-      }
-    }
-
-    reloj = requestAnimationFrame(espejitoEspejito);
+function resize() {
+  const videoAspectRatio = width / height;
+  const windowWidth = window.innerWidth;
+  const windowHeight = window.innerHeight;
+  const windowAspectRatio = windowWidth / windowHeight;
+  let adjustedWidth;
+  let adjustedHeight;
+  if (videoAspectRatio > windowAspectRatio) {
+    adjustedWidth = windowWidth;
+    adjustedHeight = windowWidth / videoAspectRatio;
+  } else {
+    adjustedWidth = windowHeight * videoAspectRatio;
+    adjustedHeight = windowHeight;
   }
+  renderer.setSize(adjustedWidth, adjustedHeight);
+  debugCamera.aspect = videoAspectRatio;
+  debugCamera.updateProjectionMatrix();
 }
 
-inicio().catch(console.error);
+window.addEventListener('resize', () => {
+  resize();
+});
+resize();
+renderer.render(scene, camera);
 
-function escalar(camara: HTMLVideoElement) {
-  lienzo.width = lienzo2.width = camara.videoWidth;
-  lienzo.height = lienzo2.height = camara.videoHeight;
-  ctx.fillStyle = '#e6f5ff';
-  ctx2.fillStyle = 'black';
+// Create wireframe material for debugging.
+const wireframeMaterial = new MeshBasicMaterial({
+  color: 0xff00ff,
+  wireframe: true,
+});
+
+// Create material for faces.
+const material = new MeshBasicMaterial({
+  color: 0xffffff,
+  map: null, // Will be created when the video is ready.
+  side: DoubleSide,
+});
+
+// Create a new geometry helper, specifying that the texture coordinates are to be based on the same video as the model input.
+const faceGeometry1 = new FaceMeshFaceGeometry({ useVideoTexture: true, normalizeCoords: false });
+const faceGeometry2 = new FaceMeshFaceGeometry({ useVideoTexture: true, normalizeCoords: false });
+
+// Create face meshes.
+const face1 = new Mesh(faceGeometry1, material);
+scene.add(face1);
+
+const face2 = new Mesh(faceGeometry2, material);
+scene.add(face2);
+
+// Enable wireframe to debug the mesh on top of the material.
+let wireframe = false;
+
+// Defines if the source should be flipped horizontally.
+let flipCamera = true;
+
+async function render(model) {
+  // Wait for video to be ready (loadeddata).
+  // if (!av) return;
+  await av.ready();
+
+  // Flip video element horizontally if necessary.
+  av.video.style.transform = flipCamera ? 'scaleX(-1)' : 'scaleX(1)';
+  av.style.opacity = '1';
+
+  // Resize orthographic camera to video dimensions if necessary.
+  if (width !== av.video.videoWidth || height !== av.video.videoHeight) {
+    const w = av.video.videoWidth;
+    const h = av.video.videoHeight;
+    camera.left = -0.5 * w;
+    camera.right = 0.5 * w;
+    camera.top = 0.5 * h;
+    camera.bottom = -0.5 * h;
+    camera.updateProjectionMatrix();
+    width = w;
+    height = h;
+    resize();
+    faceGeometry1.setSize(w, h);
+    faceGeometry2.setSize(w, h);
+  }
+
+  // Wait for the model to return a face.
+
+  const faces = await model.estimateFaces(av.video, false, flipCamera);
+  if (!status) return;
+  status.textContent = '';
+
+  // There's at least one face.
+  if (faces.length == 2) {
+    // Update face mesh geometry with new data.
+    faceGeometry1.update(faces[0], flipCamera);
+    faceGeometry2.update(faces[1], flipCamera);
+    // Switch uv coordinates.
+    for (let j = 0; j < faceGeometry1.uvs.length; j++) {
+      const v = faceGeometry1.uvs[j];
+      faceGeometry1.uvs[j] = faceGeometry2.uvs[j];
+      faceGeometry2.uvs[j] = v;
+    }
+    faceGeometry1.getAttribute('uv').needsUpdate = true;
+    faceGeometry2.getAttribute('uv').needsUpdate = true;
+  } else {
+    if (!status) return;
+    status.textContent = "Can't detect two faces to switch...";
+  }
+
+  if (wireframe) {
+    // Render the faces.
+    renderer.autoClear = true;
+    face1.material = material;
+    renderer.render(scene, camera);
+    // Prevent renderer from clearing the color buffer.
+    renderer.autoClear = false;
+    renderer.clear(false, true, false);
+    face1.material = wireframeMaterial;
+    // Render again with the wireframe material.
+    renderer.render(scene, camera);
+    renderer.autoClear = true;
+  } else {
+    // Render the scene normally.
+    renderer.render(scene, camera);
+  }
+
+  requestAnimationFrame(() => render(model));
 }
 
-// Transformar desde puntos en Canvas: https://codepen.io/TP24/pen/zVWYGX
+// Init the demo, loading dependencies.
+async function init() {
+  await tf.setBackend('webgl');
+  await av.ready();
+  const videoTexture = new VideoTexture(av.video);
+  material.map = videoTexture;
+  if (!status) return;
+  status.textContent = 'Loading model...';
+  const model = await facemesh.load({ maxFaces: 2 });
+  status.textContent = 'Detecting face...';
+  render(model);
+}
 
-// const landmarks = marcadores.detect(image);
-/**
-0 - nose
-1 - left eye (inner)
-2 - left eye
-3 - left eye (outer)
-4 - right eye (inner)
-5 - right eye
-6 - right eye (outer)
-7 - left ear
-8 - right ear
-9 - mouth (left)
-10 - mouth (right)
-11 - left shoulder
-12 - right shoulder
-13 - left elbow
-14 - right elbow
-15 - left wrist
-16 - right wrist
-17 - left pinky
-18 - right pinky
-19 - left index
-20 - right index
-21 - left thumb
-22 - right thumb
-23 - left hip
-24 - right hip
-25 - left knee
-26 - right knee
-27 - left ankle
-28 - right ankle
-29 - left heel
-30 - right heel
-31 - left foot index
-32 - right foot index
- */
+init();
