@@ -15,7 +15,7 @@ import * as tf from '@tensorflow/tfjs';
 import * as facemesh from '@tensorflow-models/facemesh';
 import GumAudioVideo from '../ayudas/gum-av';
 
-const av = document.querySelector('gum-av') as GumAudioVideo;
+const av = document.getElementById('chicleAVer') as GumAudioVideo;
 const canvas = document.querySelector('canvas') as HTMLCanvasElement;
 const status = document.querySelector('#status');
 const video = document.getElementById('video') as HTMLVideoElement;
@@ -165,7 +165,7 @@ async function render(model) {
 // Init the demo, loading dependencies.
 async function init() {
   await tf.setBackend('webgl');
-  await av.ready();
+  await av.init();
   const videoTexture = new VideoTexture(av.video);
   material.map = videoTexture;
   if (!status) return;

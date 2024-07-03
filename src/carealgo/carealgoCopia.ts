@@ -85,7 +85,7 @@ async function inicio() {
           //   ctx2.fillText(`${start}`, x, y);
         });
 
-        /*siluetaCara.forEach(({ start }, i) => {
+        siluetaCara.forEach(({ start }, i) => {
           const punto = puntos[start];
           const x = punto.x * lienzo.width;
           const y = punto.y * lienzo.height;
@@ -94,7 +94,7 @@ async function inicio() {
           } else {
             ctx2.lineTo(x, y);
           }
-        });*/
+        });
 
         contornoBoca.forEach(({ start }, i) => {
           const punto = puntos[start];
@@ -132,8 +132,8 @@ async function inicio() {
       });
 
       ctx.save();
-      //ctx.globalCompositeOperation = 'destination-in';
-      ctx.globalCompositeOperation = 'destination-out';
+      ctx.globalCompositeOperation = 'destination-in';
+      //ctx.globalCompositeOperation = 'destination-out';
       //ctx.globalCompositeOperation = 'source-atop';
       ctx.drawImage(lienzo2, 0, 0);
       ctx.restore();

@@ -7,7 +7,6 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/sitio.webmanifest" />
-    <link rel="stylesheet" href="./src/scss/estilosMarioneta.scss" />
     <!-- <link rel="canonical" href="https://enflujo.com" /> -->
 
     <title>..:: EnFlujo ::..</title>
@@ -42,17 +41,20 @@
       <li><a href="/rendijasEnElTiempo">rendijas en el tiempo</a></li>
       <li><a href="/detectorObjetos">detector de objetos</a></li>
     </ul>
-
-    <!-- <video id="camara"></video> -->
-    <video id="video" src="/petroduque.mp4" muted controls loop autoplay></video>
-
-    <p id="status">Loading...</p>
-    <div id="container">
-      <canvas id="lienzo"></canvas>
-      <gum-av id="chicleAVer"></gum-av>
-      <canvas id="canvas"></canvas>
-    </div>
-    <script type="module" src="/src/ayudas/gum-av.ts"></script>
-    <script type="module" src="/src/carealgo/carealgo.ts"></script>
+    <img id="foto" src="" />
+    <!--   <video id="camara"></video> -->
+    <script type="module" src="/src/esqueleto/esqueletoCopia.ts"></script>
   </body>
 </html>
+
+<style>
+  .camara {
+    transform: rotateY(180deg);
+    -webkit-transform: rotateY(180deg); /* Safari and Chrome */
+    -moz-transform: rotateY(180deg); /* Firefox */
+  }
+
+  #foto {
+    opacity: 0;
+  }
+</style>

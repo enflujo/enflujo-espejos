@@ -91,12 +91,11 @@ export default class GumAudioVideo extends HTMLElement {
       this.invalidateVideoSource();
       this.getMedia(this.devices.videoinput[this.currentVideoInput]);
     });
-
-    this.init();
   }
 
   async init() {
     await this.enumerateDevices();
+
     if (this.devices.videoinput.length === 1) {
       this.nextDeviceButton.style.display = 'none';
       this.currentVideoInput = 0;
@@ -108,6 +107,7 @@ export default class GumAudioVideo extends HTMLElement {
       console.log('block');
       this.invalidateVideoSource();
       this.getMedia(this.devices.videoinput[this.currentVideoInput]);
+      console.log('este no');
     }
   }
 
