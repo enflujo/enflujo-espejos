@@ -8,6 +8,7 @@ import { iniciarCamara } from '../ayudas';
 import { dimsCamara } from '../constantes';
 
 let reloj = 0;
+
 const lienzo = document.createElement('canvas');
 const ctx = lienzo.getContext('2d') as CanvasRenderingContext2D;
 const vision = await FilesetResolver.forVisionTasks();
@@ -195,16 +196,16 @@ function marioneta() {
     ctx?.clearRect(0, 0, w, h);
     const nariz = [w / 1.9, h / 2.5];
     const ojoIzq = [];
-    const x0 = w * 0.45;
-    const y0 = h * 0.1;
-    const x2 = w * 0.55;
-    const y2 = h * 0.1;
+    const x0 = 0; // w * 0.45;
+    const y0 = 0; //h * 0.1;
+    const x2 = w * 0.51; //w * 0.55;
+    const y2 = h * 0.45; //h * 0.1;
 
     drawTriangle([x0, y0], [x2, y2], [0, h], corners[0], corners[2], corners[3]);
     drawTriangle([x0, y0], [x2, y2], [w, 0], corners[0], corners[2], corners[1]);
     drawTriangle([w, 0], [x2, y2], [w, h], corners[1], corners[2], corners[4]);
     drawTriangle([0, h], [x2, y2], [w, h], corners[3], corners[2], corners[4]);
-    //*/
+
     corners.forEach((c, i) => {
       const s = handles[i].style;
       s.left = c[0] + 'px';
@@ -217,10 +218,10 @@ function marioneta() {
 
     w = canv.width = img.width;
     h = canv.height = img.height;
-    const x2 = w * 0.55;
-    const y2 = h * 0.1;
-    const x0 = w * 0.45;
-    const y0 = h * 0.1;
+    const x2 = w * 0.51; //w * 0.55;
+    const y2 = h * 0.45; //h * 0.1;
+    const x0 = 0; //w * 0.45;
+    const y0 = 0; //h * 0.1;
     //Put the four corners (and center) of the source image at semi-random places on the canvas:
     /* corners = [[rnd(w*.33),         rnd(h*.33)],
                    [rnd(w*.33) + w*.67, rnd(h*.33)],
@@ -315,6 +316,7 @@ function marioneta() {
 
       // document.body.appendChild(lienzo);
       escalar(camara);
+
       // const pintor = new DrawingUtils(ctx);
       reloj = requestAnimationFrame(espejitoEspejito);
       // const color = ctx.createLinearGradient(0, 0, ancho2, 0);
@@ -330,7 +332,7 @@ function marioneta() {
           const puntaNariz = poses.landmarks[0][0];
           const ojoDerExtremo = poses.landmarks[0][6];
           corners[2] = [puntaNariz.x * w, puntaNariz.y * h];
-          corners[0] = [ojoDerExtremo.x * w, ojoDerExtremo.y * h];
+          // corners[0] = [ojoDerExtremo.x * w, ojoDerExtremo.y * h];
           updateUI();
 
           // poses.landmarks.forEach((puntos) => {
@@ -343,6 +345,17 @@ function marioneta() {
         }
 
         reloj = requestAnimationFrame(espejitoEspejito);
+
+        const personajes = document.querySelectorAll('.personaje');
+        // Elegir personaje
+        personajes.forEach((personaje) => {
+          personaje.addEventListener('click', () => {
+            const urlImagen = personaje.getAttribute('src');
+            img.src = `${urlImagen}`;
+            console.log(`${urlImagen}`, 'hola');
+            reloj = requestAnimationFrame(espejitoEspejito);
+          });
+        });
       }
     }
 
@@ -350,9 +363,7 @@ function marioneta() {
   };
 
   const imgW = Math.min(window.innerWidth - 10, 700);
-  img.src = './trumpcuerpo.jpg';
-  //img.src = `https://picsum.photos/${imgW}/${Math.round(imgW*2/3)}?image=1072`;
-  //img.src ='https://caracoltv.brightspotcdn.com/dims4/default/30d478e/2147483647/strip/true/crop/1000x716+0+0/resize/1000x716!/quality/90/?url=http:%2F%2Fcaracol-brightspot.s3.amazonaws.com%2F06%2F0f%2F3136f98941ce886e7ffd09a62f0b%2Fgustavo-petro.jpeg';
+  img.src = './petro4.jpg';
 }
 
 marioneta();

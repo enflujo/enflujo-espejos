@@ -12,7 +12,7 @@ const vision = await FilesetResolver.forVisionTasks();
 const marcadores = await FaceLandmarker.createFromOptions(vision, {
   baseOptions: { modelAssetPath: '/modelos/face_landmarker.task', delegate: 'GPU' },
   runningMode: 'VIDEO',
-  numFaces: 1,
+  numFaces: 2,
   // outputSegmentationMasks: true
 });
 const contornoBoca = FaceLandmarker.FACE_LANDMARKS_LIPS;
@@ -47,26 +47,26 @@ async function inicio() {
   const pintor = new DrawingUtils(ctx);
   reloj = requestAnimationFrame(espejitoEspejito);
   const color = ctx.createLinearGradient(0, 0, ancho2, 0);
-  color.addColorStop(0, 'darkblue');
-  color.addColorStop(0.5, 'lightblue');
-  color.addColorStop(1, 'darkblue');
+  color.addColorStop(0, 'pink');
+  color.addColorStop(0.5, 'yellow');
+  color.addColorStop(1, 'red');
   // ctx.fillStyle = color;
   const ojoManual = [33, 7, 163, 144, 145, 153, 154, 155, 133, 173, 157, 158, 159, 160, 161, 246];
   function espejitoEspejito(ahora: number) {
     ctx2.clearRect(0, 0, lienzo.width, lienzo.height);
 
     //ctx.drawImage(camara, 0, 0);
-    ctx.drawImage(videoCargado, 0, 0);
+    // ctx.drawImage(videoCargado, 0, 0);
 
     const poses = marcadores.detectForVideo(camara, ahora);
 
     if (reproduciendo) {
       const posesPersonaje = marcadores.detectForVideo(videoCargado, ahora + 1 / 1000);
-      ctx.fillStyle = 'black';
+      // ctx.fillStyle = 'black';
       //ctx.clearRect(0, 0, lienzo.width, lienzo.height);
       posesPersonaje.faceLandmarks.forEach((puntos) => {
         ctx2.beginPath();
-        console.log(contornoOjoDer);
+
         ojoManual.forEach((indice, i) => {
           const punto = puntos[indice];
 
@@ -85,7 +85,7 @@ async function inicio() {
           //   ctx2.fillText(`${start}`, x, y);
         });
 
-        siluetaCara.forEach(({ start }, i) => {
+        /*siluetaCara.forEach(({ start }, i) => {
           const punto = puntos[start];
           const x = punto.x * lienzo.width;
           const y = punto.y * lienzo.height;
@@ -94,7 +94,7 @@ async function inicio() {
           } else {
             ctx2.lineTo(x, y);
           }
-        });
+        });*/
 
         contornoBoca.forEach(({ start }, i) => {
           const punto = puntos[start];
@@ -124,16 +124,17 @@ async function inicio() {
         // console.log('---');
         ctx2.fill();
 
-        // pintor.drawConnectors(puntos, contornoTeselado, {
-        //   lineWidth: 1,
-        //   color: color,
-        //   fillColor: 'black',
-        // });
+        pintor.drawConnectors(puntos, contornoTeselado, {
+          lineWidth: 1,
+          color: color,
+          fillColor: 'black',
+        });
       });
 
       ctx.save();
-      // ctx.globalCompositeOperation = 'destination-in';
+      //ctx.globalCompositeOperation = 'destination-in';
       ctx.globalCompositeOperation = 'destination-out';
+      //ctx.globalCompositeOperation = 'source-atop';
       ctx.drawImage(lienzo2, 0, 0);
       ctx.restore();
     }
@@ -155,7 +156,7 @@ async function inicio() {
               ctx2.lineTo(x, y);
             }
           });
-          /* 
+
           contornoBoca.forEach(({ start }, i) => {
             const punto = puntos[start];
             const x = punto.x * lienzo.width;
@@ -189,12 +190,12 @@ async function inicio() {
             } else {
               ctx2.lineTo(x, y);
             }
-          }); */
+          });
 
           ctx2.fill();
         });
         ctx.save();
-        ctx.globalCompositeOperation = 'source-over';
+        // ctx.globalCompositeOperation = 'source-atop';
         ctx.drawImage(lienzo2, 0, 0);
         ctx.restore();
       }
@@ -210,7 +211,7 @@ function escalar(camara: HTMLVideoElement) {
   lienzo.width = lienzo2.width = videoCargado.videoWidth;
   lienzo.height = lienzo2.height = videoCargado.videoHeight;
   ctx.fillStyle = '#e6f5ff';
-  ctx2.fillStyle = 'black';
+  ctx2.fillStyle = '#00000033';
 }
 
 // Transformar desde puntos en Canvas: https://codepen.io/TP24/pen/zVWYGX

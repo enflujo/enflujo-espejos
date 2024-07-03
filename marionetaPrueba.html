@@ -45,6 +45,12 @@
 
     <div id="contenedorMarioneta">
       <h2>Mover los puntos para deformar la imagen</h2>
+      <div id="contenedorPersonajes">
+        <img class="personaje" src="./petro4.jpg" />
+        <img class="personaje" src="./cabal4.jpg" />
+        <img class="personaje" src="./petro4.jpg" />
+        <img class="personaje" src="./cabal4.jpg" />
+      </div>
 
       <img id="i" />
       <div id="drag-wrapper">
@@ -67,11 +73,25 @@
         margin: 0;
         height: 100vh;
         align-items: center;
-        justify-content: center;
+        //justify-content: center;
 
         background-color: #ccc;
         font-family: Georgia, sans-serif;
         text-align: center;
+        overflow: auto;
+      }
+
+      #contenedorPersonajes {
+        width: 80vw;
+        display: flex;
+        margin: 1em 0;
+        justify-content: space-between;
+
+        .personaje {
+          max-width: 17vw;
+          cursor: pointer;
+          margin-right: 1em;
+        }
       }
 
       #i {
@@ -94,19 +114,21 @@
           border-radius: 100%;
           box-sizing: border-box;
 
-          background: tomato;
+          background: gold;
           border: 1px solid #444;
-          opacity: 0.7;
+          opacity: 0.5;
           cursor: move;
 
           &:nth-of-type(2) {
-            background: limegreen;
+            background: gold;
           }
           &:nth-of-type(3) {
-            background: cyan;
+            background: rgb(198, 22, 22);
+            width: 4em;
+            height: 4em;
           }
           &:nth-of-type(4) {
-            background: dodgerblue;
+            background: gold;
           }
           &:nth-of-type(5) {
             background: gold;
