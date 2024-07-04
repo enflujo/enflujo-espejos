@@ -30,8 +30,7 @@ const marcadoresImg = await PoseLandmarker.createFromOptions(vision, {
 const marcasDelCuerpo = PoseLandmarker.POSE_CONNECTIONS;
 const imagen = document.getElementById('foto') as HTMLImageElement;
 
-console.log(aleatorio);
-imagen.src = `${imagenes[aleatorio]}.jpg`; // 'duquemanos.jpg';
+imagen.src = `${imagenes[aleatorio]}.jpg`;
 
 imagen.onload = function () {
   inicio().catch(console.error);
@@ -56,15 +55,13 @@ async function inicio() {
   reloj = requestAnimationFrame(espejitoEspejito);
 
   const color = ctx.createLinearGradient(0, 0, ancho2, 0);
-  color.addColorStop(0, 'darkblue');
+  color.addColorStop(0, '#8bc34acc');
   color.addColorStop(0.5, 'lightblue');
-  color.addColorStop(1, 'darkblue');
+  color.addColorStop(1, '#8bc34a');
 
   ctxImg.fillStyle = 'white';
 
   function espejitoEspejito(ahora: number) {
-    //ctx.scale(-1, 1);
-
     ctx.drawImage(camara, 0, 0);
     detectarPoseImg();
     const poses = marcadores.detectForVideo(camara, ahora);
@@ -75,8 +72,8 @@ async function inicio() {
         Math.sqrt(Math.pow(puntos[0].y - puntosImg[0].y, 2)) < 0.05 &&
         Math.sqrt(Math.pow(puntos[9].x - puntosImg[9].x, 2)) < 0.05 && // boca izq
         Math.sqrt(Math.pow(puntos[9].y - puntosImg[9].y, 2)) < 0.05 &&
-        Math.sqrt(Math.pow(puntos[10].x - puntosImg[10].x, 2)) < 0.05 && // boca der
-        Math.sqrt(Math.pow(puntos[10].y - puntosImg[10].y, 2)) < 0.05 &&
+        /*         Math.sqrt(Math.pow(puntos[10].x - puntosImg[10].x, 2)) < 0.05 && // boca der
+        Math.sqrt(Math.pow(puntos[10].y - puntosImg[10].y, 2)) < 0.05 && */
         Math.sqrt(Math.pow(puntos[15].x - puntosImg[15].x, 2)) < 0.05 && // muñeca izquierda
         Math.sqrt(Math.pow(puntos[15].y - puntosImg[15].y, 2)) < 0.05 &&
         Math.sqrt(Math.pow(puntos[16].x - puntosImg[16].x, 2)) < 0.05 && // muñeca derecha
@@ -84,10 +81,14 @@ async function inicio() {
       );
     };
 
+    /*     const confetis = new Image();
+    confetis.src = 'confetis.png'; */
+
     if (poses.landmarks.length) {
       poses.landmarks.forEach((puntos) => {
         if (compararPuntos(puntos)) {
           ctxImg.drawImage(imagen, 0, 0, lienzoImg.width, lienzoImg.height);
+          //ctx.drawImage(confetis, 0, 0, lienzoImg.width, lienzoImg.height);
         } else {
           ctxImg.fillRect(0, 0, lienzoImg.width, lienzoImg.height);
         }
@@ -95,6 +96,23 @@ async function inicio() {
           lineWidth: 2,
           color: color,
         });
+
+        // Pintar círculos en los puntos clave del video
+        ctx.fillStyle = '#8bc34acc';
+        ctx.beginPath();
+        ctx.arc(puntos[0].x * lienzo.width, puntos[0].y * lienzo.width, 15, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(puntos[15].x * lienzo.width, puntos[15].y * lienzo.width, 15, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(puntos[16].x * lienzo.width, puntos[16].y * lienzo.width, 15, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.fill();
       });
     }
 
@@ -111,6 +129,23 @@ async function inicio() {
           color: 'pink',
         });
         puntosImg = puntos;
+
+        // Pintar círculos en los puntos clave de la imagen fija
+        ctx.fillStyle = '#ff75a4a1';
+        ctx.beginPath();
+        ctx.arc(puntos[0].x * lienzo.width, puntos[0].y * lienzo.width, 15, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(puntos[15].x * lienzo.width, puntos[15].y * lienzo.width, 15, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(puntos[16].x * lienzo.width, puntos[16].y * lienzo.width, 15, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.fill();
       });
     }
     // console.log(`x: ${puntosImg[15].x}, y: ${puntosImg[15].x}`);
@@ -124,6 +159,9 @@ function escalar(camara: HTMLVideoElement, imagen: HTMLImageElement) {
   lienzo.width = lienzoImg.width = camara.videoWidth;
   lienzo.height = lienzoImg.height = camara.videoHeight;
   ctx.fillStyle = '#e6f5ff';
+
+  ctx.translate(camara.videoWidth, 0);
+  ctx.scale(-1, 1);
 }
 
 // Transformar desde puntos en Canvas: https://codepen.io/TP24/pen/zVWYGX

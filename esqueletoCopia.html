@@ -35,12 +35,6 @@
     <!-- <meta name="twitter:image:alt" content="Texto que describe la imagen" /> -->
   </head>
   <body>
-    <ul id="menu">
-      <li><a href="/" class="actual">esqueleto</a></li>
-      <li><a href="/liquido">líquido</a></li>
-      <li><a href="/rendijasEnElTiempo">rendijas en el tiempo</a></li>
-      <li><a href="/detectorObjetos">detector de objetos</a></li>
-    </ul>
     <img id="foto" src="" />
     <!--   <video id="camara"></video> -->
     <script type="module" src="/src/esqueleto/esqueletoCopia.ts"></script>
@@ -48,13 +42,7 @@
 </html>
 
 <style>
-  .camara {
-    transform: rotateY(180deg);
-    -webkit-transform: rotateY(180deg); /* Safari and Chrome */
-    -moz-transform: rotateY(180deg); /* Firefox */
-  }
-
   #foto {
-    opacity: 0;
+    height: 0;
   }
 </style>
