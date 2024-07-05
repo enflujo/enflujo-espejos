@@ -8,6 +8,7 @@ import { aleatorio } from '../ayudas/ayudas';
 
 let reloj = 0;
 
+const botonRecargar = document.getElementById('botonRecargar');
 const lienzo = document.createElement('canvas');
 const ctx = lienzo.getContext('2d') as CanvasRenderingContext2D;
 const vision = await FilesetResolver.forVisionTasks();
@@ -18,8 +19,11 @@ const marcadores = await PoseLandmarker.createFromOptions(vision, {
   // outputSegmentationMasks: true
 });
 const marcasDelCuerpo = PoseLandmarker.POSE_CONNECTIONS;
+const imagenes = ['petrocara', 'duquecara', 'pachocara', 'palomacara', 'vargasllerascara', 'irenevelezcara'];
 
-const imagenes = ['petro4', 'duquecara', 'pachocara', 'palomacara'];
+botonRecargar?.addEventListener('click', () => {
+  window.location.reload();
+});
 
 function escalar(camara: HTMLVideoElement) {
   lienzo.width = camara.videoWidth;

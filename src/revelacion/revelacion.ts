@@ -10,8 +10,10 @@ const lienzo = document.createElement('canvas');
 const lienzoImg = document.createElement('canvas');
 const ctx = lienzo.getContext('2d') as CanvasRenderingContext2D;
 const ctxImg = lienzoImg.getContext('2d') as CanvasRenderingContext2D;
+const botonRecargar = document.getElementById('botonRecargar');
+const imagen = document.getElementById('foto') as HTMLImageElement;
 
-const imagenes = ['petromanos', 'palomamanos', 'cabalmanos', 'duquemanos', 'ingridmanos'];
+const imagenes = ['petromanos', 'palomamanos', 'cabalmanos', 'duquemanos', 'ingridmanos', 'rhernandezmanos'];
 
 const vision = await FilesetResolver.forVisionTasks();
 const marcadores = await PoseLandmarker.createFromOptions(vision, {
@@ -28,7 +30,10 @@ const marcadoresImg = await PoseLandmarker.createFromOptions(vision, {
   // outputSegmentationMasks: true
 });
 const marcasDelCuerpo = PoseLandmarker.POSE_CONNECTIONS;
-const imagen = document.getElementById('foto') as HTMLImageElement;
+
+botonRecargar?.addEventListener('click', () => {
+  window.location.reload();
+});
 
 imagen.src = `${imagenes[aleatorio(imagenes)]}.jpg`;
 
@@ -68,16 +73,16 @@ async function inicio() {
 
     let compararPuntos = (puntos) => {
       return (
-        Math.sqrt(Math.pow(puntos[0].x - puntosImg[0].x, 2)) < 0.05 && // nariz
-        Math.sqrt(Math.pow(puntos[0].y - puntosImg[0].y, 2)) < 0.05 &&
-        Math.sqrt(Math.pow(puntos[9].x - puntosImg[9].x, 2)) < 0.05 && // boca izq
-        Math.sqrt(Math.pow(puntos[9].y - puntosImg[9].y, 2)) < 0.05 &&
+        Math.sqrt(Math.pow(puntos[0].x - puntosImg[0].x, 2)) < 0.08 && // nariz
+        Math.sqrt(Math.pow(puntos[0].y - puntosImg[0].y, 2)) < 0.08 &&
+        Math.sqrt(Math.pow(puntos[9].x - puntosImg[9].x, 2)) < 0.08 && // boca izq
+        Math.sqrt(Math.pow(puntos[9].y - puntosImg[9].y, 2)) < 0.08 &&
         /*         Math.sqrt(Math.pow(puntos[10].x - puntosImg[10].x, 2)) < 0.05 && // boca der
         Math.sqrt(Math.pow(puntos[10].y - puntosImg[10].y, 2)) < 0.05 && */
-        Math.sqrt(Math.pow(puntos[15].x - puntosImg[15].x, 2)) < 0.05 && // muñeca izquierda
-        Math.sqrt(Math.pow(puntos[15].y - puntosImg[15].y, 2)) < 0.05 &&
-        Math.sqrt(Math.pow(puntos[16].x - puntosImg[16].x, 2)) < 0.05 && // muñeca derecha
-        Math.sqrt(Math.pow(puntos[16].y - puntosImg[16].y, 2)) < 0.05
+        Math.sqrt(Math.pow(puntos[15].x - puntosImg[15].x, 2)) < 0.08 && // muñeca izquierda
+        Math.sqrt(Math.pow(puntos[15].y - puntosImg[15].y, 2)) < 0.08 &&
+        Math.sqrt(Math.pow(puntos[16].x - puntosImg[16].x, 2)) < 0.08 && // muñeca derecha
+        Math.sqrt(Math.pow(puntos[16].y - puntosImg[16].y, 2)) < 0.08
       );
     };
 

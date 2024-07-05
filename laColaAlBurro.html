@@ -36,15 +36,15 @@
     <!-- <meta name="twitter:image:alt" content="Texto que describe la imagen" /> -->
   </head>
   <body>
-    <ul id="menu">
+    <!--  <ul id="menu">
       <li><a href="/" class="actual">esqueleto</a></li>
       <li><a href="/liquido">líquido</a></li>
       <li><a href="/rendijasEnElTiempo">rendijas en el tiempo</a></li>
       <li><a href="//detectorObjetos">detector de objetos</a></li>
-    </ul>
+    </ul> -->
 
     <div id="contenedorMarioneta">
-      <h2>Póngale la nariz al...</h2>
+      <!--  <h2>Póngale la nariz al...</h2> -->
       <!--   <div id="contenedorPersonajes">
         <img class="personaje" src="./petro4.jpg" />
         <img class="personaje" src="./cabal4.jpg" />
@@ -64,7 +64,9 @@
       </div>
     </div>
 
-    <script type="module" src="/src/marionetaPrueba/marionetaPrueba.ts"></script>
+    <div id="botonRecargar">Otra vez</div>
+
+    <script type="module" src="/src/laColaAlBurro/laColaAlBurro.ts"></script>
 
     <style>
       body {
@@ -137,6 +139,24 @@
           &::after {
             //content: attr(data-corner);
           }
+        }
+      }
+
+      #botonRecargar {
+        cursor: pointer;
+        padding: 0.3em;
+        border: black solid 2px;
+        background-color: gold;
+        width: fit-content;
+        border-radius: 5px;
+        position: absolute;
+        bottom: 3%;
+        right: 3%;
+        z-index: 2;
+
+        &:hover {
+          background-color: rgba(198, 22, 22, 0.601);
+          color: white;
         }
       }
     </style>

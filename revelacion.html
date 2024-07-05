@@ -37,12 +37,30 @@
   <body>
     <img id="foto" src="" />
     <!--   <video id="camara"></video> -->
-    <script type="module" src="/src/esqueleto/esqueletoCopia.ts"></script>
+    <div id="botonRecargar">Otra vez</div>
+    <script type="module" src="/src/revelacion/revelacion.ts"></script>
   </body>
 </html>
 
 <style>
   #foto {
     height: 0;
+  }
+
+  #botonRecargar {
+    cursor: pointer;
+    padding: 0.3em;
+    border: black solid 2px;
+    background-color: #ff75a4a1;
+    width: fit-content;
+    border-radius: 5px;
+    position: absolute;
+    bottom: 4%;
+    right: 4%;
+    z-index: 2;
+
+    &:hover {
+      background-color: #8bc34acc;
+    }
   }
 </style>
