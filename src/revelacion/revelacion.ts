@@ -13,7 +13,15 @@ const ctxImg = lienzoImg.getContext('2d') as CanvasRenderingContext2D;
 const botonRecargar = document.getElementById('botonRecargar');
 const imagen = document.getElementById('foto') as HTMLImageElement;
 
-const imagenes = ['petromanos', 'palomamanos', 'cabalmanos', 'duquemanos', 'ingridmanos', 'rhernandezmanos'];
+const imagenes = [
+  'petromanos',
+  'palomamanos',
+  'cabalmanos',
+  'duquemanos',
+  'ingridmanos',
+  'rhernandezmanos',
+  'penalosamanos',
+];
 
 const vision = await FilesetResolver.forVisionTasks();
 const marcadores = await PoseLandmarker.createFromOptions(vision, {
