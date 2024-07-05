@@ -3,6 +3,7 @@ import { FilesetResolver, PoseLandmarker } from '@mediapipe/tasks-vision';
 import { DrawingUtils } from '@mediapipe/tasks-vision';
 import { iniciarCamara } from '../ayudas';
 import { dimsCamara } from '../constantes';
+import { aleatorio } from '../ayudas/ayudas';
 
 let reloj = 0;
 const lienzo = document.createElement('canvas');
@@ -10,8 +11,7 @@ const lienzoImg = document.createElement('canvas');
 const ctx = lienzo.getContext('2d') as CanvasRenderingContext2D;
 const ctxImg = lienzoImg.getContext('2d') as CanvasRenderingContext2D;
 
-const imagenes = ['petromanos', 'palomamanos', 'cabalmanos', 'duquemanos'];
-const aleatorio = Math.floor(Math.random() * imagenes.length);
+const imagenes = ['petromanos', 'palomamanos', 'cabalmanos', 'duquemanos', 'ingridmanos'];
 
 const vision = await FilesetResolver.forVisionTasks();
 const marcadores = await PoseLandmarker.createFromOptions(vision, {
@@ -30,7 +30,7 @@ const marcadoresImg = await PoseLandmarker.createFromOptions(vision, {
 const marcasDelCuerpo = PoseLandmarker.POSE_CONNECTIONS;
 const imagen = document.getElementById('foto') as HTMLImageElement;
 
-imagen.src = `${imagenes[aleatorio]}.jpg`;
+imagen.src = `${imagenes[aleatorio(imagenes)]}.jpg`;
 
 imagen.onload = function () {
   inicio().catch(console.error);

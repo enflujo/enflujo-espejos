@@ -1,11 +1,10 @@
 //http://mike.teczno.com/notes/canvas-warp.html
 //http://s3.amazonaws.com/canvas-warp/2009-11-01/index.html
 
-import dragTracker from 'drag-tracker';
 import { FilesetResolver, PoseLandmarker } from '@mediapipe/tasks-vision';
-import { DrawingUtils } from '@mediapipe/tasks-vision';
 import { iniciarCamara } from '../ayudas';
 import { dimsCamara } from '../constantes';
+import { aleatorio } from '../ayudas/ayudas';
 
 let reloj = 0;
 
@@ -19,6 +18,8 @@ const marcadores = await PoseLandmarker.createFromOptions(vision, {
   // outputSegmentationMasks: true
 });
 const marcasDelCuerpo = PoseLandmarker.POSE_CONNECTIONS;
+
+const imagenes = ['petro4', 'duquecara', 'pachocara', 'palomacara'];
 
 function escalar(camara: HTMLVideoElement) {
   lienzo.width = camara.videoWidth;
@@ -363,7 +364,7 @@ function marioneta() {
   };
 
   const imgW = Math.min(window.innerWidth - 10, 700);
-  img.src = './petro4.jpg';
+  img.src = `${imagenes[aleatorio(imagenes)]}.jpg`;
 }
 
 marioneta();
