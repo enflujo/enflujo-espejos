@@ -18,6 +18,7 @@ export default defineConfig({
         rendijas: resolve(__dirname, 'rendijasEnElTiempo.html'),
         objetos: resolve(__dirname, 'detectorObjetos.html'),
         carealgo: resolve(__dirname, 'carealgo.html'),
+        burro: resolve(__dirname, 'laColaAlBurro.html'),
       },
     },
   },

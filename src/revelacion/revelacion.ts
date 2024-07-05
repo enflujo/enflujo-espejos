@@ -62,7 +62,7 @@ async function inicio() {
 
   document.body.appendChild(lienzo);
   document.body.appendChild(lienzoImg);
-  escalar(camara, imagen);
+  escalar(camara, imagen, true);
   document.body.append(imagen);
   const pintor = new DrawingUtils(ctx);
   reloj = requestAnimationFrame(espejitoEspejito);
@@ -106,7 +106,7 @@ async function inicio() {
           ctxImg.fillRect(0, 0, lienzoImg.width, lienzoImg.height);
         }
         pintor.drawConnectors(puntos, marcasDelCuerpo, {
-          lineWidth: 2,
+          lineWidth: 8,
           color: color,
         });
 
@@ -138,7 +138,7 @@ async function inicio() {
     if (posesImg.landmarks.length) {
       posesImg.landmarks.forEach((puntos) => {
         pintor.drawConnectors(puntos, marcasDelCuerpo, {
-          lineWidth: 2,
+          lineWidth: 8,
           color: 'pink',
         });
         puntosImg = puntos;
@@ -168,13 +168,15 @@ async function inicio() {
   detectarPoseImg();
 }
 
-function escalar(camara: HTMLVideoElement, imagen: HTMLImageElement) {
+function escalar(camara: HTMLVideoElement, imagen: HTMLImageElement, invertir = false) {
   lienzo.width = lienzoImg.width = camara.videoWidth;
   lienzo.height = lienzoImg.height = camara.videoHeight;
   ctx.fillStyle = '#e6f5ff';
 
-  ctx.translate(camara.videoWidth, 0);
-  ctx.scale(-1, 1);
+  if (invertir) {
+    ctx.translate(camara.videoWidth, 0);
+    ctx.scale(-1, 1);
+  }
 }
 
 // Transformar desde puntos en Canvas: https://codepen.io/TP24/pen/zVWYGX
