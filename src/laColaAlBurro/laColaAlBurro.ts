@@ -19,7 +19,15 @@ const marcadores = await PoseLandmarker.createFromOptions(vision, {
   // outputSegmentationMasks: true
 });
 const marcasDelCuerpo = PoseLandmarker.POSE_CONNECTIONS;
-const imagenes = ['petrocara', 'duquecara', 'pachocara', 'palomacara', 'vargasllerascara', 'irenevelezcara'];
+const imagenes = [
+  'petrocara',
+  'duquecara',
+  'pachocara',
+  'palomacara',
+  'vargasllerascara',
+  'irenevelezcara',
+  'penalosacara',
+];
 
 botonRecargar?.addEventListener('click', () => {
   window.location.reload();
