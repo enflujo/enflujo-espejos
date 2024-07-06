@@ -176,6 +176,8 @@ function escalar(camara: HTMLVideoElement, imagen: HTMLImageElement, invertir = 
   if (invertir) {
     ctx.translate(camara.videoWidth, 0);
     ctx.scale(-1, 1);
+    ctxImg.translate(camara.videoWidth, 0);
+    ctxImg.scale(-1, 1);
   }
 }
 
